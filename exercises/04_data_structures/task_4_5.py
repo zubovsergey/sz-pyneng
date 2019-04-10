@@ -13,3 +13,11 @@
 
 command1 = 'switchport trunk allowed vlan 1,2,3,5,8'
 command2 = 'switchport trunk allowed vlan 1,3,8,9'
+
+commands1 = command1.strip().split()
+vlans1 = commands1[-1].strip().split(',')
+commands2 = command2.strip().split()
+vlans2 = commands2[-1].strip().split(',')
+
+common_vlans = set(vlans1) & (set(vlans2))
+print (list(common_vlans))

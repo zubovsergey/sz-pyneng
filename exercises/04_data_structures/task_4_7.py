@@ -10,3 +10,7 @@
 '''
 
 mac = 'AAAA:BBBB:CCCC'
+
+mac_str = mac.replace(':','')
+
+print (bin(int(mac_str,16)))

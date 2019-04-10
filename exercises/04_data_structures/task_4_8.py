@@ -17,5 +17,14 @@
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 
 '''
+ip_template = '''
+IP address:
+{0:<8} {1:<8} {2:<8} {3:<8}
+{0:08b} {1:08b} {2:08b} {3:08b}
+'''
+
 
 ip = '192.168.3.1'
+ip_str = ip.split('.')
+
+print (ip_template.format(int(ip_str[0]),int(ip_str[1]),int(ip_str[2]),int(ip_str[3])))
