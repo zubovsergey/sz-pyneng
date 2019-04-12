@@ -44,3 +44,8 @@ london_co = {
         'routing': True
     }
 }
+
+r_id = input ('Enter device id: ')
+param_id = input ('Enter key_id (location, vendor, model, ios, ip, vlans, routing): ')
+
+print (london_co[r_id][param_id])

@@ -43,3 +43,10 @@ london_co = {
         'routing': True
     }
 }
+
+r_id = input ('Enter device id: ')
+param_id = input('Enter key_id {}: '.format(tuple(london_co[r_id].keys())))
+
+x = param_id.lower()
+
+print (london_co[r_id].get(str(x), 'it isn\'t exist'))
