@@ -14,3 +14,15 @@
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
+ip = input ('Enter ip address: ')
+
+if  1 <= int(ip.split('.')[0]) <= 223:
+    print (ip + ' - unicast')
+elif 2 <= int(ip.split('.')[0]) <= 239:
+    print (ip + ' - multicast')
+elif ip == '255.255.255.255':
+    print (ip + ' - local broadcast')
+elif ip == '0.0.0.0':
+    print (ip + ' - unassigned')
+else:
+    print (ip + 'unused')
