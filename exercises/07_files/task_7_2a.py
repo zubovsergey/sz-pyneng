@@ -12,4 +12,17 @@
 
 '''
 
-ignore = ['duplex', 'alias', 'Current configuration']
+ignore = ['interface', 'duplex', 'alias', 'Current configuration']
+
+with open('config_sw1.txt', 'r') as f:
+
+    for line in f:
+
+        skip_line = False
+
+        for x in ignore:
+            if x in line:
+                #skip_line = True
+                break          
+            if not line.startswith('!') and not skip_line:
+                print(line)            

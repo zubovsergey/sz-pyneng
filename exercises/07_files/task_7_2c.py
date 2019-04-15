@@ -15,5 +15,20 @@
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
+from sys import argv 
+source_file, dest_file = argv[1:] 
 
 ignore = ['duplex', 'alias', 'Current configuration']
+
+with open(source_file, 'r') as f, open(dest_file, 'w') as dest:
+
+    for line in f:
+
+        skip_line = False
+
+        for x in ignore:
+            if x in line:
+                #skip_line = True
+                break          
+            if not skip_line:
+                dest.write(line)            
