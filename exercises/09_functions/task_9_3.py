@@ -22,3 +22,18 @@
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
 
+def get_int_vlan_map (filename):
+
+    with open(filename) as f:
+        result_access = {}
+        result_trunk = {}
+        for line in f:
+            if 'interface FastEthernet' in line:
+                intf = line.split()[-1]
+            elif 'switchport access vlan' in line:
+                result_access[intf] = line.split()[-1]
+            elif 'switchport trunk allowed vlan' in line:
+                result_trunk[intf] = line.split()[-1]
+        return result_access, result_trunk
+
+print(get_int_vlan_map('config_sw1.txt'))

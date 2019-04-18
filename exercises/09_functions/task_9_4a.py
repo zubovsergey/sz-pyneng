@@ -54,3 +54,26 @@ def ignore_command(command, ignore):
     '''
     return any(word in command for word in ignore)
 
+
+def convert_config_to_dict(config):
+    result = {}
+    with open(config) as f:
+        for line in f:
+            line = line.rstrip()
+
+            if line and not ('!' in line or ignore_command(line, ignore)):
+                if line[0].isalnum():
+                    level_1 = line
+                    result[level_1] = []
+                elif line.startswith(' ') and line[1].isalnum():
+                    last_level_2 = line
+                    result[level_1].append(line)
+                else:
+                    #если команда 3 уровня встретилась первый раз,
+                    #результатом будет список
+                    if type(result[level_1]) is list:
+                        result[level_1] = {key:[] for key in result[level_1]}
+                    result[level_1][last_level_2].append(line)
+
+    return result
+print(convert_config_to_dict('config_sw1.txt'))

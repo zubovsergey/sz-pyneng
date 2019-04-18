@@ -41,4 +41,19 @@ access_config = {
 }
 
 
+def generate_access_config(intf_vlan_mapping, access_template, port_security):
 
+    for intf, vlan in access_config.items():
+        print('\ninterface FastEthernet' + intf)
+        for command in access_mode_template:
+            if command.endswith('access vlan'):
+                print(' {} {}'.format(command, vlan))
+            else:
+                print(' {}'.format(command))
+        
+        for command2 in port_security_template:
+            if port_security:
+                print (' ' + command2)
+
+
+print (generate_access_config(access_config, access_mode_template, port_security = False))
