@@ -28,3 +28,23 @@ R6           Fa 0/2          143           R S I           2811       Fa 0/0
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
 
+def parse_cdp_neighbors (command_output):
+
+    result = {}
+
+    for line in command_output.split('\n'):
+        if '>' in line:
+            s_device = line.split('>')[0]
+        elif 'Fa' in line or 'Eth' in line:
+            cdp_info = line.strip().split()
+            d_device, s_type, s_intf, *other, d_type, d_intf = cdp_info
+            source = s_device, s_type+s_intf
+            destination = d_device, d_type+d_intf
+
+            result[source] = destination
+
+    return result
+    
+if __name__ == "__main__":
+    with open ('sh_cdp_n_sw1.txt', 'r') as show_cdp:
+        print (parse_cdp_neighbors(show_cdp.read()))
