@@ -14,4 +14,26 @@
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
+import subprocess
 
+def ping_ip_addresses (ip_list):
+
+    alive_ips = []
+    unreachable_ips = []
+
+    for ip in ip_list:
+        reply = subprocess.run(['ping', '-c', '1', '-n', ip], stdout=subprocess.DEVNULL)
+
+        if reply.returncode == 0:
+            alive_ips.append(ip)
+        else:
+            unreachable_ips.append(ip)
+    
+    return print ('Good IPs: ', alive_ips), print ('Bad IPs: ', unreachable_ips)
+    #return alive_ips, unreachable_ips
+
+
+
+ip_list = ['8.8.8.8', '4.4.4.4']
+
+print (ping_ip_addresses(ip_list))
