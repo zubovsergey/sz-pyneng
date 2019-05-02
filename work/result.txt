@@ -1,0 +1,56 @@
+interface Ethernet191/1/28
+description #45-MBX025-W5-CO-1 10g p1
+switchport access vlan 139
+ no shutdown
+interface Ethernet191/1/38
+description #44-MBX025-W5-CO-3 10g p1
+switchport access vlan 139
+ no shutdown
+interface Ethernet191/1/42
+description #36-MBX025-W6-CO-1 10g p1
+switchport access vlan 139
+ no shutdown
+interface Ethernet193/1/22
+description #45-MBX025-W3-CO-1 10g p1
+switchport access vlan 139
+ no shutdown
+interface Ethernet193/1/24
+description #44-MBX025-W3-CO-3 10g p1
+switchport access vlan 139
+ no shutdown
+interface Ethernet193/1/26
+description #36-MBX025-W4-CO-1 10g p1
+switchport access vlan 139
+ no shutdown
+interface Ethernet193/1/28
+description #35-MBX025-W4-CO-3 10g p1
+switchport access vlan 139
+ no shutdown
+interface Ethernet192/1/28
+description #45-MBX025-W4-CO-4 10g p1
+switchport access vlan 139
+ no shutdown
+interface Ethernet192/1/38
+description #44-MBX025-W5-CO-2 10g p1
+switchport access vlan 139
+ no shutdown
+interface Ethernet192/1/42
+description #36-MBX025-W5-CO-4 10g p1
+switchport access vlan 139
+ no shutdown
+interface Ethernet194/1/22
+description #39-MBX025-W3-CO-2 10g p1
+switchport access vlan 139
+ no shutdown
+interface Ethernet194/1/24
+description #38-MBX025-W3-CO-4 10g p1
+switchport access vlan 139
+ no shutdown
+interface Ethernet194/1/26
+description #37-MBX025-W4-CO-2 10g p1
+switchport access vlan 139
+ no shutdown
+interface Ethernet196/1/2
+description #43-MBX025-W6-CO-2 10g p1
+switchport access vlan 139
+ no shutdown
