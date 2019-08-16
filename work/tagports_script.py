@@ -7,29 +7,43 @@ with open('config.txt') as f:
 
        
         if line:
-            fex = line[4].split('-')[4]
+            fex = line[2].split('-')[3]
             #print (fex)
             port = line[-1]
             #print (port)
             #print ('show int status | i {}'.format(fex.replace('FEX', 'Eth') +'/1/' + port.replace('p','')))
             print ('interface ' + fex.replace('FEX', 'Ethernet') +'/1/' + port.replace('p',''))
 
-       
+        
+        if line:
+            description = line[0:2]
+            #print (description)
+            print ('description ' + ' '.join(description) + '\n switchport access vlan 503' + '\n no shutdown')
+
+
+"""       
             if line:
-                description = line[0:4]
-                #x = description.strip('').split('-')
-                #print (x)
-                #print ('description ' + ' '.join(description) + '\n switchport access vlan 506' + '\n no shutdown')
-                
+                description = line
+                x = description.strip('').split('-')
+                print (x)
+                print ('description ' + ' '.join(description) + '\n switchport access vlan 506' + '\n no shutdown')
+"""
+
+
+
+
+"""
+"""
+"""                
                 if 'MBX027' in ' '.join(description):
                     print ('description ' + ' '.join(description) + '\n switchport access vlan 139' + '\n no shutdown')
 
                 if 'MBX028' in ' '.join(description):
-                    print ('description ' + ' '.join(description) + '\n switchport access vlan 140' + '\n no shutdown')
+                    print ('description ' + ' '.join(description) + '\n switchport access vlan 101' + '\n no shutdown')
 
                 if 'MBX128' in ' '.join(description):
-                    print ('description ' + ' '.join(description) + '\n switchport access vlan 140' + '\n no shutdown')
-
+                    print ('description ' + ' '.join(description) + '\n switchport access vlan 270' + '\n no shutdown')
+"""
 """
         if '5648' in line:
             line = line.rstrip().split()

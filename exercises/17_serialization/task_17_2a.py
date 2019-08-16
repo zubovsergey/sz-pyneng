@@ -32,3 +32,48 @@
 Проверить работу параметра save_to_filename и записать итоговый словарь в файл topology.yaml.
 
 '''
+import re
+from pprint import pprint
+import glob
+import yaml
+
+sh_cdp_files = glob.glob('sh_cdp*')
+#print(sh_cdp_files)
+
+
+def generate_topology_from_cdp (list_of_files,save_to_filename):
+
+	final_dict = {}
+
+	for files in list_of_files:
+		
+
+		with open(files) as f:
+			data = f.readlines()
+
+
+			for line in data:
+				match1 = re.search(r'(?P<sid>^.+>|#)', line)
+				match2 = re.search(r'(?P<did>\S+) +(?P<lintf>Eth \S+) +\w+ +\S? \S? \S? +\S+ +(?P<rintf>Eth \S+)', line)
+
+				if match1:
+					device_id = match1.group('sid').strip('>|#')
+					final_dict[device_id] = {}
+
+				elif match2:
+					local_intf = match2.group('lintf')
+					rdid = match2.group('did')
+					remote_intf = match2.group('rintf')
+
+
+					final_dict[device_id][local_intf] = {}
+					final_dict[device_id][local_intf][rdid] = remote_intf
+
+	#return (final_dict)
+
+	with open(save_to_filename, 'w') as dest_f:
+		yaml.dump(final_dict, dest_f)
+			
+
+pprint(generate_topology_from_cdp(sh_cdp_files, 'topology.yaml'))
+#generate_topology_from_cdp(sh_cdp_files, 'cdp_result.txt')

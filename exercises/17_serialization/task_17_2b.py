@@ -31,3 +31,24 @@
 > pip install graphviz
 
 '''
+import re
+from pprint import pprint
+import yaml
+from draw_network_graph import draw_topology
+
+
+def transform_topology(file):
+
+	with open(file) as f:
+		data = yaml.safe_load(f)
+		#pprint (data)
+
+		topology = {}
+		for l_id, did_data in data.items():
+			for l_port, remote_data in did_data.items():
+				for r_id, r_port in remote_data.items():
+					topology[(l_id, l_port)] = (r_id, r_port)
+
+		draw_topology(topology)
+
+transform_topology('topology.yaml')

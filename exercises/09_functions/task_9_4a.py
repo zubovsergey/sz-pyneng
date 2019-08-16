@@ -37,7 +37,7 @@
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 
 '''
-
+from pprint import pprint
 ignore = ['duplex', 'alias', 'Current configuration']
 
 
@@ -76,4 +76,4 @@ def convert_config_to_dict(config):
                     result[level_1][last_level_2].append(line)
 
     return result
-print(convert_config_to_dict('config_sw1.txt'))
+pprint(convert_config_to_dict('config_r1.txt'))
