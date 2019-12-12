@@ -7,7 +7,7 @@ with open('config.txt') as f:
 
 
         if line:
-            fex = line[2].split('-')[4]
+            fex = line[3].split('-')[2]
             #print (fex)
             port = line[-1]
             #print (port)
@@ -18,4 +18,4 @@ with open('config.txt') as f:
         if line:
             description = line[0:2]
             #print (description)
-            print ('description ' + ' '.join(description) + '\n switchport access vlan 508' + '\n no shutdown')
+            print ('description ' + ' '.join(description) + '\n switchport access vlan 133' + '\n   spanning-tree port type edge' '\n no shutdown')

@@ -37,7 +37,7 @@ def check_active (file, db):
 	for line in result:
 		if line in db_data:
 			print ('!!!')
-
+			cursor.execute('update ')
 
 
 check_active ('sw1_dhcp_snooping.txt', 'dhcp_snooping.db')

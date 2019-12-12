@@ -30,8 +30,45 @@ Out[14]: '*17:06:12.278 UTC Wed Mar 13 2019'
 In [15]: send_commands(r1, config=['username user5 password pass5', 'username user6 password pass6'])
 Out[15]: 'config term\nEnter configuration commands, one per line.  End with CNTL/Z.\nR1(config)#username user5 password pass5\nR1(config)#username user6 password pass6\nR1(config)#end\nR1#'
 '''
+import getpass
+import sys
+import netmiko.ssh_exception
+from netmiko import ConnectHandler
+import yaml
+from pprint import pprint
 
 commands = [
     'logging 10.255.255.1', 'logging buffered 20010', 'no logging console'
 ]
 command = 'sh ip int br'
+
+def send_command(device, show = False, config = False, verbose = True):
+
+	if verbose:
+		print('connection to device {}'.format(device['ip']))
+	device_params = device
+
+	try:
+		ssh = ConnectHandler(**device_params)
+		ssh.enable()
+
+		if show:
+			result = ssh.send_command(show)
+			pprint (result)
+
+		elif config:
+			result = ssh.send_config_set(config)
+			pprint (result)
+
+	except netmiko.ssh_exception.SSHException as err:
+		print (err)
+
+if __name__ == '__main__':
+
+	with open ('devices.yaml') as f:
+			device_list = yaml.safe_load(f)
+
+			for device in device_list:
+				
+				send_command(device,config = commands)
+
