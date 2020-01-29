@@ -82,3 +82,80 @@ R3#
 
 Для выполнения задания можно создавать любые дополнительные функции.
 '''
+from pprint import pprint
+from datetime import datetime
+import time
+from itertools import repeat
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import logging
+
+from netmiko import ConnectHandler
+import netmiko.ssh_exception
+import yaml
+
+logging.getLogger('paramiko').setLevel(logging.WARNING)
+
+logging.basicConfig(
+    format = '%(threadName)s %(name)s %(levelname)s: %(message)s',
+    level=logging.INFO)
+
+start_msg = '===> {} Connection: {}'
+received_msg = '<=== {} Received:   {}'
+
+def send_show(device, command, verbose = True):
+    if verbose:
+        print('connection to device {}'.format(device['ip']))
+    device_params = device
+    try:
+        logging.info(start_msg.format(datetime.now().time(), device['ip']))
+        ssh = ConnectHandler(**device_params)
+        ssh.enable()
+        result = ssh.find_prompt()  + command + '\n' + ssh.send_command(command) + '\n'*2
+        logging.info(received_msg.format(datetime.now().time(), device['ip']))
+
+    except netmiko.ssh_exception.SSHException as err:
+        print (err)
+
+    return result
+
+def send_config(device, command, verbose = True):
+    if verbose:
+    	print('connection to device {}'.format(device['ip']))
+    device_params = device  
+    try:
+        logging.info(start_msg.format(datetime.now().time(), device['ip']))
+        ssh = ConnectHandler(**device_params)
+        ssh.enable()
+        result = ssh.send_config_set(command) + '\n'*2
+        logging.info(received_msg.format(datetime.now().time(), device['ip']))
+    except netmiko.ssh_exception.SSHException as err:
+        print (err)
+
+    return result
+
+
+def send_commands_to_devices(devices, filename, limit, show = None, config = None):
+    data = []
+    with ThreadPoolExecutor(max_workers=limit) as executor:
+        futures = []
+        for device in devices:
+            if show:
+                futures.append(executor.submit(send_show, device, show))
+            elif config:
+                futures.append(executor.submit(send_config, device, config))
+
+        for f in as_completed(futures):
+            data.append(f.result())
+
+    with open(filename, 'w') as dest:
+        for line in data:
+            dest.write(line)
+
+if __name__ == '__main__':
+    with open('devices.yaml') as f:
+        devices = yaml.safe_load(f)
+        send_commands_to_devices(devices, 'result.txt', 3,config=['router ospf 55', 'network 0.0.0.0 255.255.255.255 area 0'])
+
+        #for device in devices:
+        	#print (send_show(device,'sh clock'))
+

@@ -42,8 +42,7 @@ commands = [
 ]
 command = 'sh ip int br'
 
-def send_command(device, show = False, config = False, verbose = True):
-
+def send_command(device, show = None, config = None, verbose = True):
 	if verbose:
 		print('connection to device {}'.format(device['ip']))
 	device_params = device
@@ -51,15 +50,12 @@ def send_command(device, show = False, config = False, verbose = True):
 	try:
 		ssh = ConnectHandler(**device_params)
 		ssh.enable()
-
 		if show:
 			result = ssh.send_command(show)
 			pprint (result)
-
 		elif config:
 			result = ssh.send_config_set(config)
 			pprint (result)
-
 	except netmiko.ssh_exception.SSHException as err:
 		print (err)
 
@@ -70,5 +66,5 @@ if __name__ == '__main__':
 
 			for device in device_list:
 				
-				send_command(device,config = commands)
+				send_command(device,show = 'sh clock')
 

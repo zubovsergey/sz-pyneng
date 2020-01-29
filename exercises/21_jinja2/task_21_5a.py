@@ -26,6 +26,14 @@
 
 Для этого задания нет теста!
 '''
+import re
+from netmiko import ConnectHandler
+from jinja2 import Environment, FileSystemLoader
+import yaml
+from pprint import pprint
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+command = 'sh ip int br | i Tu'
 
 data = {
     'tun_num': None,
@@ -35,3 +43,63 @@ data = {
     'tun_ip_2': '10.0.1.2 255.255.255.252'
 }
 
+src_r = {'device_type': 'cisco_ios',
+              'ip': '192.168.100.1',
+              'username': 'cisco',
+              'password': 'cisco',
+              'secret': 'cisco'}
+
+dst_r = {'device_type': 'cisco_ios',
+              'ip': '192.168.100.2',
+              'username': 'cisco',
+              'password': 'cisco',
+              'secret': 'cisco'}
+
+def send_show_command (device):
+	print('connection to device {}'.format(device['ip']))
+	device_params = device
+	with ConnectHandler(**device_params) as ssh:
+		ssh.enable()
+		result =ssh.send_command(command)
+		return result
+
+def check_tu_int (device1, device2):
+	with ThreadPoolExecutor(max_workers=2) as executor:
+		futures = []
+		futures.append(executor.submit(send_show_command, device1))
+		futures.append(executor.submit(send_show_command, device2))
+
+		for f in as_completed(futures):
+			if f.result():
+				y = []
+				x = f.result()
+				match = re.findall('(Tunnel)(\d+)', x)
+				for i in match:
+					y.append(int(i[1]))
+				int_num = []
+				for i2 in range(1, 1000):
+					if i2 not in y:
+						int_num.append(i2)
+
+				return int_num[0]
+
+def configure_vpn (src_device_params, dst_device_params, src_template, dst_template, vpn_data_dict):
+	env = Environment(
+		loader=FileSystemLoader('templates'),
+		trim_blocks=True,
+		lstrip_blocks=True)
+	temp1 = env.get_template(src_template)
+	temp2 = env.get_template(dst_template)
+	
+	config = vpn_data_dict
+	config['tun_num'] = check_tu_int(src_device_params,dst_device_params)
+
+	result1 = temp1.render(config)
+	result2 = temp2.render(config)
+
+	final = [result1, result2]
+
+	return final
+
+if __name__ == '__main__':
+	pprint(configure_vpn (src_r, dst_r, 'gre_ipsec_vpn_1.txt','gre_ipsec_vpn_2.txt', data))

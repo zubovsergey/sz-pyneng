@@ -13,4 +13,15 @@
 Проверить работу функции на выводе команды output/sh_ip_int_br.txt и шаблоне templates/sh_ip_int_br.template.
 
 '''
+import textfsm
+from pprint import pprint
 
+def parse_command_output(template, command_output):
+	with open(template) as t, open(command_output) as r:
+		fsm = textfsm.TextFSM(t)
+		result = fsm.ParseText(r.read())
+
+	return fsm.header, result
+
+
+pprint(parse_command_output('templates/sh_ip_int_br.template','output/sh_ip_int_br.txt'))

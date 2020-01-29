@@ -35,8 +35,54 @@ Ethernet0/1                unassigned      YES NVRAM  administratively down down
 
 Проверить работу функции на устройствах из файла devices.yaml и словаре commands
 '''
+from pprint import pprint
+from datetime import datetime
+import time
+from itertools import repeat
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import logging
 
-commands = {'192.168.100.1': 'sh ip int br',
-            '192.168.100.2': 'sh arp',
-            '192.168.100.3': 'sh ip int br'}
+from netmiko import ConnectHandler
+import yaml
 
+commands= {'192.168.100.1': 'sh ip int br',
+           '192.168.100.2': 'sh arp',
+           '192.168.100.3': 'sh ip int br'}
+
+logging.getLogger('paramiko').setLevel(logging.WARNING)
+
+logging.basicConfig(
+    format = '%(threadName)s %(name)s %(levelname)s: %(message)s',
+    level=logging.INFO)
+
+start_msg = '===> {} Connection: {}'
+received_msg = '<=== {} Received:   {}'
+
+def send_show(device_dict, command):
+    logging.info(start_msg.format(datetime.now().time(), device_dict['ip']))
+    with ConnectHandler(**device_dict) as ssh:
+        ssh.enable()
+        result = ssh.find_prompt()  + command + '\n' + ssh.send_command(command) + '\n'*2
+        logging.info(received_msg.format(datetime.now().time(), device_dict['ip']))
+        return result
+
+def send_command_to_devices(devices, commands_dict, filename, limit):
+    data = []
+    with ThreadPoolExecutor(max_workers=limit) as executor:
+        futures=[]
+        for device in devices:
+            if device['ip'] in commands_dict:
+            	futures.append(executor.submit(send_show, device, commands_dict[device['ip']]))
+
+        for f in as_completed(futures):
+            data.append(f.result())
+
+    with open(filename, 'w') as dest:
+        for line in data:
+            dest.write(line)
+
+
+if __name__ == '__main__':
+    with open('devices.yaml') as f:
+        devices = yaml.safe_load(f)
+    pprint(send_command_to_devices(devices, commands , 'result.txt', 3))

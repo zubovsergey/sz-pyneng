@@ -1,0 +1,16 @@
+Value Filldown l_dev (\S+)
+Value Required r_dev (\S+)
+Value l_intf (.*)
+Value r_intf (.*)
+Value r_ios (\S+)
+Value mgmt_ip (\S+)
+Value platform (.*)
+
+Start
+  ^${l_dev}[>#].
+  ^Device ID: ${r_dev}
+  ^Interface: ${l_intf}, +Port ID \(outgoing port\): ${r_intf}
+  ^.*Version +${r_ios},
+  ^  IP address: +${mgmt_ip}
+  ^Platform: ${platform},
+  ^Management address -> Record

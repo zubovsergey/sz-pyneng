@@ -14,3 +14,15 @@
 
 Проверить работу шаблона с помощью функции parse_command_output из задания 22.1.
 '''
+import textfsm
+from pprint import pprint
+
+def parse_command_output(template, command_output):
+	with open(template) as t, open(command_output) as r:
+		fsm = textfsm.TextFSM(t)
+		result = fsm.ParseText(r.read())
+
+	return fsm.header, result
+
+
+pprint(parse_command_output('templates/sh_ip_dhcp_snooping_binding.txt','output/sh_ip_dhcp_snooping.txt'))

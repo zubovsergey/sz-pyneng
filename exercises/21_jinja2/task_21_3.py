@@ -35,3 +35,23 @@
 
 
 '''
+from jinja2 import Environment, FileSystemLoader
+import yaml
+from pprint import pprint
+
+def generate_config(template, data_dict):
+	env = Environment(
+		loader=FileSystemLoader('templates'),
+		trim_blocks=True,
+		lstrip_blocks=True)
+	temp = env.get_template(template)
+
+	with open(data_dict) as f:
+		config = yaml.safe_load(f)
+		pprint (config)
+
+	result = temp.render(config)
+	
+	return result
+
+print(generate_config('ospf.txt', 'data_files/ospf.yml'))

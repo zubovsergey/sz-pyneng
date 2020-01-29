@@ -1,0 +1,11 @@
+Value network (\S+)
+Value ad (\d+)
+Value metric (\d+)
+Value List nexthop (\S+)
+
+Start
+  ^O -> Continue.Record
+  ^O +${network} +\[${ad}/${metric}\] +via +${nexthop},
+  ^ +\[${ad}/${metric}\] +via +${nexthop},
+
+  

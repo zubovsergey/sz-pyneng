@@ -33,3 +33,48 @@ Ethernet0/1                unassigned      YES NVRAM  administratively down down
 
 Проверить работу функции на устройствах из файла devices.yaml
 '''
+from pprint import pprint
+from datetime import datetime
+import time
+from itertools import repeat
+from concurrent.futures import ThreadPoolExecutor
+import logging
+
+from netmiko import ConnectHandler
+import yaml
+
+logging.getLogger('paramiko').setLevel(logging.WARNING)
+
+logging.basicConfig(
+    format = '%(threadName)s %(name)s %(levelname)s: %(message)s',
+    level=logging.INFO)
+
+start_msg = '===> {} Connection: {}'
+received_msg = '<=== {} Received:   {}'
+
+def send_show(device_dict, command):
+    logging.info(start_msg.format(datetime.now().time(), device_dict['ip']))
+    with ConnectHandler(**device_dict) as ssh:
+        ssh.enable()
+        result = ssh.find_prompt()  + command + '\n' + ssh.send_command(command) + '\n'*2
+        logging.info(received_msg.format(datetime.now().time(), device_dict['ip']))
+        return result
+
+def send_command_to_devices(devices, command, filename, limit):
+    data = []
+    with ThreadPoolExecutor(max_workers=limit) as executor:
+        result = executor.map(send_show, devices, repeat(command))
+        for output in result:
+            data.append(output)
+    with open(filename, 'w') as dest:
+        for line in data:
+            dest.write(line)
+
+
+
+
+
+if __name__ == '__main__':
+    with open('devices.yaml') as f:
+        devices = yaml.safe_load(f)
+    pprint(send_command_to_devices(devices, 'sh ip int br', 'result.txt', 3))
